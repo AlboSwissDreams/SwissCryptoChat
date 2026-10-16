@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="it">
 <head>
@@ -14,12 +13,12 @@ button,input,textarea{font:inherit}
 button{cursor:pointer;color:inherit}
 button:disabled{opacity:.5;cursor:not-allowed}
 .app{min-height:100dvh;background:radial-gradient(ellipse at 75% -10%,#17213b,transparent 42%),var(--bg)}
-.top{height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid var(--line);gap:10px}
+.top{min-height:70px;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--line);gap:10px}
 .brand{display:flex;align-items:center;gap:10px}
-.logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#08111b;font-size:22px;font-weight:900}
+.logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#08111b;font-size:22px;font-weight:900;flex-shrink:0}
 .brand h1{font-size:17px;margin:0}
 .brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:2px}
-.topright{display:flex;align-items:center;gap:10px}
+.topright{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .pill{font-size:11px;color:var(--green);border:1px solid #54efae55;border-radius:20px;padding:6px 9px}
 .btn{border:1px solid var(--line);background:#141e30;border-radius:10px;padding:9px 12px}
 .btn:hover{border-color:var(--cyan)}
@@ -35,14 +34,16 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .users{overflow:auto;flex:1;padding:0 8px 10px}
 .user{display:flex;align-items:center;gap:10px;padding:12px 9px;width:100%;border:1px solid transparent;background:transparent;border-radius:11px;text-align:left}
 .user:hover,.user.active{background:#152035;border-color:#293b54}
-.avatar{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#20364d,#30274c);display:grid;place-items:center;font-weight:800;flex-shrink:0}
+.avatar{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#20364d,#30274c);display:grid;place-items:center;font-weight:800;flex-shrink:0;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
 .userinfo{min-width:0;flex:1}
 .username{font-weight:700;font-size:13px;overflow-wrap:anywhere}
 .preview{color:var(--muted);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .center{display:flex;flex-direction:column;min-width:0}
-.chathead{padding:15px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);min-height:72px}
+.chathead{padding:12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);min-height:72px;flex-wrap:wrap}
 .chathead .username{font-size:15px}
 .status{font-size:11px;color:var(--green)}
+.headactions{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
 .messages{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:12px;background-image:radial-gradient(#26334b42 1px,transparent 1px);background-size:20px 20px}
 .msg{max-width:82%;align-self:flex-start;display:flex;flex-direction:column;gap:4px}
 .msg.mine{align-self:flex-end;align-items:flex-end}
@@ -67,12 +68,13 @@ textarea:focus{border-color:var(--cyan)}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#162438;border:1px solid #54f6e86b;border-radius:12px;padding:11px 15px;z-index:30;max-width:90%;font-size:12px}
 .hidden{display:none!important}
 @media(max-width:650px){
- .top{height:62px;padding:0 10px}.brand h1{font-size:14px}.logo{width:34px;height:34px}.brand small{font-size:9px}.pill{font-size:9px;padding:5px}
+ .top{min-height:62px;padding:9px}.brand h1{font-size:14px}.logo{width:34px;height:34px}.brand small{font-size:9px}.pill{font-size:9px;padding:5px}
+ .topright{gap:5px}.topright .btn{font-size:11px;padding:7px}
  .layout{display:block;height:calc(100dvh - 62px);min-height:0;padding:7px}
  .panel{height:100%}.layout.listmode .center{display:none}.layout.chatmode .side{display:none}
  .layout.chatmode .center{display:flex}.layout.listmode .side{display:flex}
- .chathead{padding:10px}.messages{padding:14px 10px}.msg{max-width:90%}.composer{padding:9px}
- .send{padding:0 12px}.btn{padding:8px}
+ .chathead{padding:9px}.messages{padding:14px 10px}.msg{max-width:90%}.composer{padding:9px}.send{padding:0 12px}
+ .btn{padding:8px}
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -81,7 +83,12 @@ textarea:focus{border-color:var(--cyan)}
 <div class="app">
 <header class="top">
  <div class="brand"><div class="logo">S</div><div><h1>SwissCryptoChat</h1><small>PRIVATE • CONNECTED</small></div></div>
- <div class="topright"><span class="pill" id="connection">● Connessione…</span><button class="btn" id="logout" hidden>Esci</button></div>
+ <div class="topright">
+  <span class="pill" id="connection">● Connessione…</span>
+  <button class="btn hidden" id="photoBtn" type="button">📷 Foto profilo</button>
+  <input id="photoInput" type="file" accept="image/*" class="hidden">
+  <button class="btn" id="logout" hidden>Esci</button>
+ </div>
 </header>
 
 <div class="layout listmode" id="layout">
@@ -118,385 +125,296 @@ textarea:focus{border-color:var(--cyan)}
 'use strict';
 
 const SUPABASE_URL='https://ydgsazdazubhrkquvhbw.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY='sb_publishable_b_-6srut4gOgN-8ZLcjBJw_FT76vS7H';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_b_-6srut4gOgN-8ZLcjBJw_F76vS7H';
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-
 const $=id=>document.getElementById(id);
-let currentUser=null;
-let myProfile=null;
-let profiles=[];
-let activeId=null;
-let messages=[];
-let authMode='login';
-let loadingMessages=false;
-let lastLoadedCount=0;
-let refreshTimer=null;
-let toastTimer=null;
+
+let currentUser=null,myProfile=null,profiles=[],activeId=null,messages=[];
+let authMode='login',loadingMessages=false,refreshTimer=null,toastTimer=null;
 
 function esc(value){
- return String(value??'').replace(/[&<>"']/g,ch=>({
-  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
- }[ch]));
+ return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
-
 function showToast(message){
- const el=$('toast');
- el.textContent=message;
- el.classList.remove('hidden');
- clearTimeout(toastTimer);
- toastTimer=setTimeout(()=>el.classList.add('hidden'),4000);
+ $('toast').textContent=message;$('toast').classList.remove('hidden');
+ clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.add('hidden'),4500);
 }
-
 function setConnection(message,good=false){
- $('connection').textContent=(good?'● ':'● ')+message;
+ $('connection').textContent='● '+message;
  $('connection').style.color=good?'var(--green)':'var(--danger)';
 }
-
+function avatarMarkup(profile,name){
+ const url=profile?.avatar_url||'';
+ if(url.startsWith('data:image/')||url.startsWith('https://')||url.startsWith('http://')){
+  return `<span class="avatar"><img src="${esc(url)}" alt="Foto profilo" loading="lazy"></span>`;
+ }
+ return `<span class="avatar">${esc((name||'UT').slice(0,2).toUpperCase())}</span>`;
+}
 function showAuth(message=''){
  $('overlay').classList.remove('hidden');
  $('authtitle').textContent=authMode==='login'?'Accedi a SwissCryptoChat':'Crea il tuo account';
- $('authdesc').textContent=authMode==='login'
-  ?'Accedi per vedere gli utenti e inviare messaggi.'
-  :'Registrati con email e password per iniziare.';
+ $('authdesc').textContent=authMode==='login'?'Accedi per vedere gli utenti e inviare messaggi.':'Registrati con email e password per iniziare.';
  $('authsubmit').textContent=authMode==='login'?'Accedi':'Registrati';
  $('switchauth').textContent=authMode==='login'?'Registrati':'Ho già un account';
  $('password').autocomplete=authMode==='login'?'current-password':'new-password';
  $('authmessage').textContent=message;
 }
-
-$('switchauth').onclick=()=>{
- authMode=authMode==='login'?'signup':'login';
- showAuth();
-};
+$('switchauth').onclick=()=>{authMode=authMode==='login'?'signup':'login';showAuth();};
 
 $('authform').onsubmit=async e=>{
  e.preventDefault();
- const email=$('email').value.trim();
- const password=$('password').value;
- const button=$('authsubmit');
- button.disabled=true;
- $('authmessage').textContent='Attendi…';
-
+ const email=$('email').value.trim(),password=$('password').value;
+ const button=$('authsubmit');button.disabled=true;$('authmessage').textContent='Attendi…';
  try{
-  let result;
-  if(authMode==='login'){
-   result=await db.auth.signInWithPassword({email,password});
-  }else{
-   result=await db.auth.signUp({email,password});
-  }
-
-  if(result.error) throw result.error;
-
+  const result=authMode==='login'
+   ?await db.auth.signInWithPassword({email,password})
+   :await db.auth.signUp({email,password});
+  if(result.error)throw result.error;
   if(authMode==='signup'&&!result.data.session){
-   $('authmessage').textContent='Controlla la tua email e conferma la registrazione, poi accedi.';
-   return;
+   $('authmessage').textContent='Controlla la tua email e conferma la registrazione, poi accedi.';return;
   }
-
   currentUser=result.data.user||result.data.session?.user||null;
-  if(currentUser) await startApp();
- }catch(error){
-  $('authmessage').textContent='Errore: '+error.message;
- }finally{
-  button.disabled=false;
- }
+  if(currentUser)await startApp();
+ }catch(error){$('authmessage').textContent='Errore: '+error.message;}
+ finally{button.disabled=false;}
 };
 
 async function ensureProfile(){
  const uid=currentUser.id;
- const {data,error}=await db.from('profiles')
-  .select('id,username,avatar_url')
-  .eq('id',uid)
-  .maybeSingle();
-
- if(error) throw error;
- if(data){
-  myProfile=data;
-  return;
- }
-
+ const {data,error}=await db.from('profiles').select('id,username,avatar_url').eq('id',uid).maybeSingle();
+ if(error)throw error;
+ if(data){myProfile=data;return;}
  const emailName=(currentUser.email||'utente').split('@')[0];
  const username=emailName.replace(/[^a-zA-Z0-9_.-]/g,'_').slice(0,30)||'utente';
-
- const result=await db.from('profiles')
-  .insert({id:uid,username})
-  .select('id,username,avatar_url')
-  .single();
-
- if(result.error) throw result.error;
+ const result=await db.from('profiles').insert({id:uid,username}).select('id,username,avatar_url').single();
+ if(result.error)throw result.error;
  myProfile=result.data;
 }
 
 async function loadProfiles(){
- const {data,error}=await db.from('profiles')
-  .select('id,username,avatar_url')
-  .neq('id',currentUser.id)
-  .order('username',{ascending:true});
-
- if(error) throw error;
+ const {data,error}=await db.from('profiles').select('id,username,avatar_url').neq('id',currentUser.id).order('username',{ascending:true});
+ if(error)throw error;
  profiles=data||[];
-
- if(!profiles.some(p=>p.id===activeId)) activeId=null;
+ if(!profiles.some(p=>p.id===activeId))activeId=null;
  renderUsers();
-
- if(activeId){
-  await loadMessages();
- }else{
-  renderConversationEmpty();
- }
+ if(activeId){renderHead();await loadMessages();}
+ else renderConversationEmpty();
 }
-
 function renderUsers(){
  const term=$('search').value.trim().toLowerCase();
  const visible=profiles.filter(p=>(p.username||'utente').toLowerCase().includes(term));
-
  $('users').innerHTML=visible.length?visible.map(p=>{
   const name=p.username||'Utente';
-  const initials=name.slice(0,2).toUpperCase();
   return `<button class="user ${p.id===activeId?'active':''}" data-user="${esc(p.id)}">
-   <span class="avatar">${esc(initials)}</span>
+   ${avatarMarkup(p,name)}
    <span class="userinfo"><span class="username">${esc(name)}</span><br>
    <span class="preview">${p.id===activeId?'Conversazione selezionata':'Apri conversazione'}</span></span>
   </button>`;
  }).join(''):'<div class="empty">Nessun altro utente trovato.<br>Per provare la chat, registra un secondo account.</div>';
-
- document.querySelectorAll('[data-user]').forEach(button=>{
-  button.onclick=()=>selectUser(button.dataset.user);
- });
+ document.querySelectorAll('[data-user]').forEach(button=>button.onclick=()=>selectUser(button.dataset.user));
 }
-
 function renderConversationEmpty(){
  $('chathead').innerHTML='<div class="empty">Seleziona un utente dalla lista.</div>';
  $('messages').innerHTML='<div class="empty"><div class="logo" style="margin:auto">S</div><h2>La tua chat</h2><p>Scegli un account registrato per iniziare una conversazione.</p></div>';
- $('messageinput').disabled=true;
- $('sendbtn').disabled=true;
+ $('messageinput').disabled=true;$('sendbtn').disabled=true;
  $('messageinput').placeholder='Seleziona prima un utente…';
 }
+function activeProfile(){return profiles.find(p=>p.id===activeId)||null;}
 
 async function selectUser(id){
- activeId=id;
- messages=[];
- lastLoadedCount=0;
- renderUsers();
- renderHead();
- $('layout').classList.remove('listmode');
- $('layout').classList.add('chatmode');
- $('messageinput').disabled=false;
- $('sendbtn').disabled=false;
- $('messageinput').focus();
-
- try{
-  await loadMessages();
- }catch(error){
-  showToast('Errore nel caricamento: '+error.message);
- }
+ activeId=id;messages=[];renderUsers();renderHead();
+ $('layout').classList.remove('listmode');$('layout').classList.add('chatmode');
+ $('messageinput').disabled=false;$('sendbtn').disabled=false;
+ $('messageinput').placeholder='Scrivi un messaggio…';
+ try{await loadMessages();}catch(error){showToast('Errore nel caricamento: '+error.message);}
 }
-
-function activeProfile(){
- return profiles.find(p=>p.id===activeId)||null;
-}
-
 function renderHead(){
  const p=activeProfile();
- if(!p){
-  renderConversationEmpty();
-  return;
- }
+ if(!p){renderConversationEmpty();return;}
  const name=p.username||'Utente';
  $('chathead').innerHTML=`
-  <span class="avatar">${esc(name.slice(0,2).toUpperCase())}</span>
+  ${avatarMarkup(p,name)}
   <div><div class="username">${esc(name)}</div><div class="status">● Account registrato</div></div>
-  <button class="btn" id="backbtn" style="margin-left:auto">Chat ☰</button>`;
+  <div class="headactions">
+   <button class="btn" id="deleteChat" type="button">🗑 Elimina chat</button>
+   <button class="btn" id="backbtn" type="button">Chat ☰</button>
+  </div>`;
  $('backbtn').onclick=()=>{
-  $('layout').classList.remove('chatmode');
-  $('layout').classList.add('listmode');
+  $('layout').classList.remove('chatmode');$('layout').classList.add('listmode');
  };
+ $('deleteChat').onclick=deleteConversation;
 }
 
 async function loadMessages(){
- if(!currentUser||!activeId||loadingMessages) return;
+ if(!currentUser||!activeId||loadingMessages)return;
  loadingMessages=true;
-
  try{
-  const uid=currentUser.id;
-  const other=activeId;
+  const uid=currentUser.id,other=activeId;
   const {data,error}=await db.from('messages')
    .select('sender_id,receiver_id,content,created_at')
    .or(`and(sender_id.eq.${uid},receiver_id.eq.${other}),and(sender_id.eq.${other},receiver_id.eq.${uid})`)
    .order('created_at',{ascending:true});
-
-  if(error) throw error;
-  if(other!==activeId) return;
-
+  if(error)throw error;
+  if(other!==activeId)return;
   messages=(data||[]).map(m=>({
-   text:m.content,
-   mine:m.sender_id===uid,
+   text:m.content,mine:m.sender_id===uid,
    time:new Date(m.created_at).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})
   }));
-
   renderMessages();
-  lastLoadedCount=messages.length;
- }finally{
-  loadingMessages=false;
- }
+ }finally{loadingMessages=false;}
 }
-
 function renderMessages(){
  const box=$('messages');
- if(!activeId){
-  renderConversationEmpty();
-  return;
- }
-
+ if(!activeId){renderConversationEmpty();return;}
  if(!messages.length){
-  box.innerHTML='<div class="empty"><h2>Inizia la conversazione</h2><p>Scrivi il primo messaggio qui sotto.</p></div>';
-  return;
+  box.innerHTML='<div class="empty"><h2>Inizia la conversazione</h2><p>Scrivi il primo messaggio qui sotto.</p></div>';return;
  }
-
  box.innerHTML=messages.map(m=>`
   <div class="msg ${m.mine?'mine':''}">
    <div class="bubble">${esc(m.text)}</div>
    <div class="meta">${esc(m.time)}${m.mine?' · ✓':''}</div>
   </div>`).join('');
-
  box.scrollTop=box.scrollHeight;
 }
 
 $('composeform').onsubmit=async e=>{
  e.preventDefault();
- const input=$('messageinput');
- const text=input.value.trim();
- if(!text||!currentUser||!activeId) return;
-
- const receiver=activeId;
- $('sendbtn').disabled=true;
-
+ const input=$('messageinput'),text=input.value.trim();
+ if(!text||!currentUser||!activeId)return;
+ const receiver=activeId;$('sendbtn').disabled=true;
  try{
-  const {data,error}=await db.from('messages')
-   .insert({
-    sender_id:currentUser.id,
-    receiver_id:receiver,
-    content:text.slice(0,4000)
-   })
-   .select('sender_id,receiver_id,content,created_at')
-   .single();
-
-  if(error) throw error;
-
-  input.value='';
-  input.style.height='auto';
-
+  const {data,error}=await db.from('messages').insert({
+   sender_id:currentUser.id,receiver_id:receiver,content:text.slice(0,4000)
+  }).select('sender_id,receiver_id,content,created_at').single();
+  if(error)throw error;
+  input.value='';input.style.height='auto';
   if(activeId===receiver){
-   messages.push({
-    text:data.content,
-    mine:true,
-    time:new Date(data.created_at).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})
-   });
+   messages.push({text:data.content,mine:true,time:new Date(data.created_at).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})});
    renderMessages();
   }
-
   showToast('Messaggio salvato su Supabase.');
- }catch(error){
-  console.error(error);
-  showToast('Invio non riuscito: '+error.message);
- }finally{
-  $('sendbtn').disabled=!activeId;
-  input.focus();
- }
+ }catch(error){console.error(error);showToast('Invio non riuscito: '+error.message);}
+ finally{$('sendbtn').disabled=!activeId;input.focus();}
 };
 
-$('messageinput').addEventListener('input',e=>{
- e.target.style.height='auto';
- e.target.style.height=Math.min(e.target.scrollHeight,120)+'px';
-});
-
-$('messageinput').addEventListener('keydown',e=>{
- if(e.key==='Enter'&&!e.shiftKey){
-  e.preventDefault();
-  $('composeform').requestSubmit();
+async function deleteConversation(){
+ if(!currentUser||!activeId)return;
+ const other=activeId;
+ const profile=activeProfile();
+ const name=profile?.username||'questo utente';
+ const confirmed=confirm(`Vuoi eliminare TUTTI i messaggi tra te e ${name}?\n\nQuesta operazione elimina i messaggi dal database per entrambi i partecipanti e non può essere annullata.`);
+ if(!confirmed)return;
+ const button=$('deleteChat');if(button)button.disabled=true;
+ try{
+  const uid=currentUser.id;
+  const {error}=await db.from('messages').delete()
+   .or(`and(sender_id.eq.${uid},receiver_id.eq.${other}),and(sender_id.eq.${other},receiver_id.eq.${uid})`);
+  if(error)throw error;
+  if(activeId===other){messages=[];renderMessages();}
+  showToast('Richiesta di eliminazione completata.');
+ }catch(error){
+  console.error(error);
+  showToast('Eliminazione non riuscita. Controlla la policy DELETE in Supabase: '+error.message);
+ }finally{
+  const b=$('deleteChat');if(b)b.disabled=false;
  }
-});
+}
 
+$('messageinput').addEventListener('input',e=>{
+ e.target.style.height='auto';e.target.style.height=Math.min(e.target.scrollHeight,120)+'px';
+});
+$('messageinput').addEventListener('keydown',e=>{
+ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('composeform').requestSubmit();}
+});
 $('search').addEventListener('input',renderUsers);
 $('refresh').onclick=async()=>{
- try{
-  await loadProfiles();
-  showToast('Elenco utenti aggiornato.');
- }catch(error){
-  showToast('Errore: '+error.message);
+ try{await loadProfiles();showToast('Elenco utenti aggiornato.');}
+ catch(error){showToast('Errore: '+error.message);}
+};
+
+/* Foto profilo: riduce l'immagine e la salva nel campo avatar_url. */
+$('photoBtn').onclick=()=>$('photoInput').click();
+$('photoInput').onchange=async e=>{
+ const file=e.target.files?.[0];
+ if(!file)return;
+ if(!file.type.startsWith('image/')){
+  showToast('Scegli un file immagine.');e.target.value='';return;
  }
+ if(file.size>10*1024*1024){
+  showToast('L’immagine deve essere inferiore a 10 MB.');e.target.value='';return;
+ }
+ try{
+  showToast('Preparazione della foto…');
+  const dataUrl=await new Promise((resolve,reject)=>{
+   const reader=new FileReader();
+   reader.onerror=()=>reject(new Error('Impossibile leggere il file.'));
+   reader.onload=()=>{
+    const img=new Image();
+    img.onerror=()=>reject(new Error('Immagine non valida.'));
+    img.onload=()=>{
+     const canvas=document.createElement('canvas');
+     const scale=Math.min(1,320/Math.max(img.width,img.height));
+     canvas.width=Math.max(1,Math.round(img.width*scale));
+     canvas.height=Math.max(1,Math.round(img.height*scale));
+     canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+     resolve(canvas.toDataURL('image/jpeg',0.72));
+    };
+    img.src=reader.result;
+   };
+   reader.readAsDataURL(file);
+  });
+  const {data,error}=await db.from('profiles').update({avatar_url:dataUrl})
+   .eq('id',currentUser.id).select('id,username,avatar_url').single();
+  if(error)throw error;
+  myProfile=data;
+  await loadProfiles();
+  renderHead();
+  showToast('Foto profilo aggiornata.');
+ }catch(error){
+  console.error(error);
+  showToast('Foto non salvata: '+error.message);
+ }finally{$('photoInput').value='';}
 };
 
 async function startApp(){
  $('overlay').classList.add('hidden');
- $('logout').hidden=false;
+ $('logout').hidden=false;$('photoBtn').classList.remove('hidden');
  setConnection('Collegato',true);
-
  try{
-  await ensureProfile();
-  await loadProfiles();
-
-  if(!profiles.length){
-   showToast('Account attivo. Per provare i messaggi serve un secondo utente registrato.');
-  }
+  await ensureProfile();await loadProfiles();
+  if(!profiles.length)showToast('Account attivo. Per provare i messaggi serve un secondo utente registrato.');
  }catch(error){
-  console.error(error);
-  setConnection('Errore Supabase');
+  console.error(error);setConnection('Errore Supabase');
   showToast('Errore profilo o policy RLS: '+error.message);
  }
-
  clearInterval(refreshTimer);
  refreshTimer=setInterval(async()=>{
   if(!currentUser)return;
-  try{
-   await loadProfiles();
-  }catch(error){
-   console.error('Aggiornamento chat:',error.message);
-  }
+  try{await loadProfiles();}catch(error){console.error('Aggiornamento chat:',error.message);}
  },5000);
 }
 
 $('logout').onclick=async()=>{
- clearInterval(refreshTimer);
- await db.auth.signOut();
- currentUser=null;
- myProfile=null;
- profiles=[];
- activeId=null;
- messages=[];
- $('logout').hidden=true;
- setConnection('Disconnesso');
- renderConversationEmpty();
+ clearInterval(refreshTimer);await db.auth.signOut();
+ currentUser=null;myProfile=null;profiles=[];activeId=null;messages=[];
+ $('logout').hidden=true;$('photoBtn').classList.add('hidden');
+ setConnection('Disconnesso');renderConversationEmpty();
  $('users').innerHTML='<div class="empty">Accedi per vedere gli utenti.</div>';
- authMode='login';
- showAuth();
+ authMode='login';showAuth();
 };
 
 db.auth.onAuthStateChange((event,session)=>{
- if(session?.user && !currentUser){
-  currentUser=session.user;
-  setTimeout(()=>startApp(),0);
- }
- if(!session && currentUser){
-  currentUser=null;
-  clearInterval(refreshTimer);
-  showAuth('Sessione terminata. Accedi di nuovo.');
+ if(session?.user&&!currentUser){currentUser=session.user;setTimeout(()=>startApp(),0);}
+ if(!session&&currentUser){
+  currentUser=null;clearInterval(refreshTimer);showAuth('Sessione terminata. Accedi di nuovo.');
  }
 });
-
 async function init(){
  const {data,error}=await db.auth.getSession();
- if(error){
-  showAuth('Impossibile verificare la sessione: '+error.message);
-  return;
- }
- if(data.session?.user){
-  currentUser=data.session.user;
-  await startApp();
- }else{
-  showAuth();
- }
+ if(error){showAuth('Impossibile verificare la sessione: '+error.message);return;}
+ if(data.session?.user){currentUser=data.session.user;await startApp();}
+ else showAuth();
 }
-
 init();
 })();
 </script>
