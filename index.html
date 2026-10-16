@@ -304,10 +304,14 @@ function renderHead(){
  if(!p){renderConversationEmpty();return;}
  const n=p.username||'Utente';
  $('chathead').innerHTML=`${avatarMarkup(p,n)}<div><div class="username">${esc(n)}</div><div class="status">● Contatto · chat privata</div></div>
- <div class="headactions"><button class="btn" id="deleteChat" type="button">🗑 Elimina chat</button><button class="btn" id="backbtn" type="button">Rubrica ☰</button></div>`;
- $('backbtn').onclick=()=>{$('layout').classList.remove('chatmode');$('layout').classList.add('listmode');};
+ <div class="headactions"><button class="btn" id="deleteChat" type="button">🗑 Elimina chat</button><button class="btn" id="backbtn" type="button" aria-label="Torna ai contatti">← Indietro</button></div>`;
+ $('backbtn').onclick=()=>{
+  $('layout').classList.remove('chatmode');
+  $('layout').classList.add('listmode');
+ };
  $('deleteChat').onclick=deleteConversation;
 }
+
 
 async function loadMessages(){
  if(!currentUser||!activeId||loadingMessages)return;
